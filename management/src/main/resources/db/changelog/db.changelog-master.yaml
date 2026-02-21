@@ -1,0 +1,9 @@
+databaseChangeLog:
+  - include:
+      file: classpath:db/changelog/releases/V1__create_document_flow_schema.sql
+  - include:
+      file: classpath:db/changelog/releases/V2__create_documents_table.sql
+  - include:
+      file: classpath:db/changelog/releases/V3__create_document_status_history_table.sql
+  - include:
+      file: classpath:db/changelog/releases/V4__create_approval_registry_table.sql
