@@ -7,8 +7,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.example.common.dto.enums.DocumentStatus;
 import com.example.management.entity.ApprovalRegistryEntity;
-import com.example.management.entity.enums.DocumentStatus;
 import com.example.management.exception.EntityNotFoundException;
 import com.example.management.exception.RegistryRegistrationException;
 import com.example.management.exception.UnacceptableStatusException;

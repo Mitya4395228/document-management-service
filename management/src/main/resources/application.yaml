@@ -2,13 +2,13 @@ spring:
   application:
     name: management
   datasource:
-    url: jdbc:postgresql://localhost:5433/document_service_db
+    url: jdbc:postgresql://localhost:5432/document_service_db
     driver-class-name: org.postgresql.Driver
     username: document_service
     password: 123456
   jpa:
-    show-sql: true
+    # show-sql: true
     properties:
       hibernate:
         dll-auto: none
-        format_sql: true
+        # format_sql: true

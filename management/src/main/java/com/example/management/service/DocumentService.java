@@ -16,18 +16,18 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedModel;
 import org.springframework.stereotype.Service;
 
-import com.example.management.dto.DocumentApprovalResult;
-import com.example.management.dto.DocumentApproval;
-import com.example.management.dto.DocumentCreateDTO;
-import com.example.management.dto.DocumentFilter;
-import com.example.management.dto.DocumentBatchReceipt;
-import com.example.management.dto.DocumentPersistentApproval;
-import com.example.management.dto.DocumentReadDTO;
-import com.example.management.dto.DocumentReadExtendedDTO;
-import com.example.management.dto.DocumentSubmit;
-import com.example.management.dto.DocumentPersistentApprovalResult;
-import com.example.management.dto.DocumentSubmitResult;
-import com.example.management.dto.enums.ResultType;
+import com.example.common.dto.DocumentApproval;
+import com.example.common.dto.DocumentApprovalResult;
+import com.example.common.dto.DocumentBatchRequest;
+import com.example.common.dto.DocumentCreateDTO;
+import com.example.common.dto.DocumentFilter;
+import com.example.common.dto.DocumentPersistentApproval;
+import com.example.common.dto.DocumentPersistentApprovalResult;
+import com.example.common.dto.DocumentReadDTO;
+import com.example.common.dto.DocumentReadExtendedDTO;
+import com.example.common.dto.DocumentSubmit;
+import com.example.common.dto.DocumentSubmitResult;
+import com.example.common.dto.enums.ResultType;
 import com.example.management.exception.EntityNotFoundException;
 import com.example.management.exception.RegistryRegistrationException;
 import com.example.management.exception.UnacceptableStatusException;
@@ -71,11 +71,11 @@ public class DocumentService {
     /**
      * Batch receipt of documents with pagination and sorting
      * 
-     * @param batch    {@link DocumentBatchReceipt}
+     * @param batch    {@link DocumentBatchRequest}
      * @param pageable {@link Pageable}
      * @return {@link PagedModel} of {@link DocumentReadDTO}
      */
-    public PagedModel<DocumentReadDTO> getDocuments(DocumentBatchReceipt batch, Pageable pageable) {
+    public PagedModel<DocumentReadDTO> getDocuments(DocumentBatchRequest batch, Pageable pageable) {
         var totalElements = batch.ids().size();
         var content = documentRepository.findAllById(batch.ids(), pageable).stream().map(mapper::entityToDTO).toList();
         return new PagedModel<>(new PageImpl<>(content, pageable, totalElements));

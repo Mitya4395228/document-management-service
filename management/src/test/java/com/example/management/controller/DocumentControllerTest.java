@@ -25,17 +25,17 @@ import org.springframework.test.web.servlet.MockMvc;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-import com.example.management.dto.DocumentApproval;
-import com.example.management.dto.DocumentApprovalResult;
-import com.example.management.dto.DocumentCreateDTO;
-import com.example.management.dto.DocumentFilter;
-import com.example.management.dto.DocumentBatchReceipt;
-import com.example.management.dto.DocumentPersistentApproval;
-import com.example.management.dto.DocumentPersistentApprovalResult;
-import com.example.management.dto.DocumentReadDTO;
-import com.example.management.dto.DocumentReadExtendedDTO;
-import com.example.management.dto.DocumentSubmit;
-import com.example.management.dto.DocumentSubmitResult;
+import com.example.common.dto.DocumentApproval;
+import com.example.common.dto.DocumentApprovalResult;
+import com.example.common.dto.DocumentBatchRequest;
+import com.example.common.dto.DocumentCreateDTO;
+import com.example.common.dto.DocumentFilter;
+import com.example.common.dto.DocumentPersistentApproval;
+import com.example.common.dto.DocumentPersistentApprovalResult;
+import com.example.common.dto.DocumentReadDTO;
+import com.example.common.dto.DocumentReadExtendedDTO;
+import com.example.common.dto.DocumentSubmit;
+import com.example.common.dto.DocumentSubmitResult;
 import com.example.management.service.DocumentService;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -77,7 +77,7 @@ public class DocumentControllerTest {
     @Test
     void testGetDocuments() throws Exception {
 
-        var pack = new DocumentBatchReceipt(Set.of(UUID.randomUUID()));
+        var pack = new DocumentBatchRequest(Set.of(UUID.randomUUID()));
         var pageable = PageRequest.of(0, 20);
         var content = Instancio.ofList(DocumentReadDTO.class).size(1).create();
         var response = new PagedModel<DocumentReadDTO>(new PageImpl<>(content, pageable, content.size()));
@@ -104,7 +104,7 @@ public class DocumentControllerTest {
     @Test
     void testGetDocuments_Validation() throws Exception {
 
-        var pack = new DocumentBatchReceipt(Set.of());
+        var pack = new DocumentBatchRequest(Set.of());
         var pageable = PageRequest.of(0, 20);
         assertTrue(pack.ids().isEmpty());
 

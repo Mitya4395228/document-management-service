@@ -2,13 +2,13 @@ package com.example.management.mapper;
 
 import org.mapstruct.Mapper;
 
-import com.example.management.dto.DocumentCreateDTO;
-import com.example.management.dto.DocumentReadDTO;
-import com.example.management.dto.DocumentReadExtendedDTO;
+import com.example.common.dto.DocumentCreateDTO;
+import com.example.common.dto.DocumentReadDTO;
+import com.example.common.dto.DocumentReadExtendedDTO;
+import com.example.common.dto.enums.Action;
+import com.example.common.dto.enums.DocumentStatus;
 import com.example.management.entity.DocumentEntity;
 import com.example.management.entity.DocumentStatusHistoryEntity;
-import com.example.management.entity.enums.Action;
-import com.example.management.entity.enums.DocumentStatus;
 
 @Mapper(componentModel = "spring")
 public interface DocumentMapper {

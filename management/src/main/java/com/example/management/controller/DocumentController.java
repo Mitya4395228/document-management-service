@@ -16,17 +16,17 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.management.dto.DocumentApproval;
-import com.example.management.dto.DocumentApprovalResult;
-import com.example.management.dto.DocumentCreateDTO;
-import com.example.management.dto.DocumentFilter;
-import com.example.management.dto.DocumentBatchReceipt;
-import com.example.management.dto.DocumentPersistentApproval;
-import com.example.management.dto.DocumentPersistentApprovalResult;
-import com.example.management.dto.DocumentReadDTO;
-import com.example.management.dto.DocumentReadExtendedDTO;
-import com.example.management.dto.DocumentSubmit;
-import com.example.management.dto.DocumentSubmitResult;
+import com.example.common.dto.DocumentApproval;
+import com.example.common.dto.DocumentApprovalResult;
+import com.example.common.dto.DocumentBatchRequest;
+import com.example.common.dto.DocumentCreateDTO;
+import com.example.common.dto.DocumentFilter;
+import com.example.common.dto.DocumentPersistentApproval;
+import com.example.common.dto.DocumentPersistentApprovalResult;
+import com.example.common.dto.DocumentReadDTO;
+import com.example.common.dto.DocumentReadExtendedDTO;
+import com.example.common.dto.DocumentSubmit;
+import com.example.common.dto.DocumentSubmitResult;
 import com.example.management.service.DocumentService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -61,7 +61,7 @@ public class DocumentController {
 
     @Operation(summary = "Get documents", description = "Get documents by list of id. If document not found, it will be skipped.")
     @GetMapping("/package")
-    public PagedModel<DocumentReadDTO> getDocuments(@ParameterObject @Valid DocumentBatchReceipt pack,
+    public PagedModel<DocumentReadDTO> getDocuments(@ParameterObject @Valid DocumentBatchRequest pack,
             @ParameterObject @PageableDefault(size = 20, page = 0) Pageable pageable) {
         return service.getDocuments(pack, pageable);
     }

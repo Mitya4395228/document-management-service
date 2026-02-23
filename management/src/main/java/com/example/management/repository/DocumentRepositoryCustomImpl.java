@@ -9,8 +9,8 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedModel;
 
-import com.example.management.dto.DocumentFilter;
-import com.example.management.dto.DocumentReadDTO;
+import com.example.common.dto.DocumentFilter;
+import com.example.common.dto.DocumentReadDTO;
 import com.example.management.entity.DocumentEntity;
 import com.example.management.mapper.DocumentMapper;
 

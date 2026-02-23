@@ -25,22 +25,22 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.PageRequest;
 
-import com.example.management.dto.DocumentApproval;
-import com.example.management.dto.DocumentCreateDTO;
-import com.example.management.dto.DocumentFilter;
-import com.example.management.dto.DocumentBatchReceipt;
-import com.example.management.dto.DocumentPersistentApproval;
-import com.example.management.dto.DocumentSubmit;
-import com.example.management.dto.enums.ResultType;
 import com.example.management.entity.ApprovalRegistryEntity;
 import com.example.management.entity.DocumentEntity;
 import com.example.management.entity.DocumentStatusHistoryEntity;
-import com.example.management.entity.enums.Action;
-import com.example.management.entity.enums.DocumentStatus;
 import com.example.management.exception.EntityNotFoundException;
 import com.example.management.repository.ApprovalRegistryRepository;
 import com.example.management.repository.DocumentRepository;
 import com.example.management.repository.DocumentStatusHistoryRepository;
+import com.example.common.dto.DocumentApproval;
+import com.example.common.dto.DocumentBatchRequest;
+import com.example.common.dto.DocumentCreateDTO;
+import com.example.common.dto.DocumentFilter;
+import com.example.common.dto.DocumentPersistentApproval;
+import com.example.common.dto.DocumentSubmit;
+import com.example.common.dto.enums.Action;
+import com.example.common.dto.enums.DocumentStatus;
+import com.example.common.dto.enums.ResultType;
 import com.example.management.TestcontainersConfiguration;
 
 import lombok.AccessLevel;
@@ -95,7 +95,7 @@ public class DocumentServiceTest {
 
         var expected = createDocument(DocumentStatus.DRAFT);
         var pageable = PageRequest.of(0, 20);
-        var actual = documentService.getDocuments(new DocumentBatchReceipt(Set.of(expected.getId())), pageable);
+        var actual = documentService.getDocuments(new DocumentBatchRequest(Set.of(expected.getId())), pageable);
 
         assertTrue(actual.getContent().size() == 1);
         assertTrue(actual.getMetadata().number() == pageable.getPageNumber());
@@ -125,7 +125,7 @@ public class DocumentServiceTest {
         assertNotEquals(actual1.number(), actual2.number());
         assertNotEquals(actual1.number(), actual3.number());
         assertNotEquals(actual2.number(), actual3.number());
-        assertTrue(actual3.number() ==  actual2.number() + 1);
+        assertTrue(actual3.number() == actual2.number() + 1);
         assertTrue(actual2.number() == actual1.number() + 1);
     }
 
@@ -369,6 +369,59 @@ public class DocumentServiceTest {
 
         registry = approvalRegistryRepository.findByDocumentId(expected.getId()).orElse(null);
         assertNotNull(registry);
+    }
+
+    @Test
+    void testHappyPath() throws InterruptedException {
+
+        var happyDocument = createDocument(DocumentStatus.DRAFT, false);
+        assertTrue(happyDocument.getStatusHistory().isEmpty());
+
+        var notHappyDocument = createDocument(DocumentStatus.DRAFT, false);
+        assertTrue(notHappyDocument.getStatusHistory().isEmpty());
+
+        var subbmitted = documentService
+                .submit(new DocumentSubmit(Set.of(happyDocument.getId(), notHappyDocument.getId()), "test", "test"));
+        assertEquals(2, subbmitted.size());
+        for (var result : subbmitted) {
+            assertEquals(ResultType.SUCCESS, result.message());
+        }
+
+        happyDocument = documentRepository.findWithHistoryById(happyDocument.getId()).get();
+        assertEquals(DocumentStatus.SUBMITTED, happyDocument.getStatus());
+        assertEquals(1, happyDocument.getStatusHistory().size());
+
+        notHappyDocument = documentRepository.findWithHistoryById(notHappyDocument.getId()).get();
+        assertEquals(DocumentStatus.SUBMITTED, notHappyDocument.getStatus());
+        assertEquals(1, notHappyDocument.getStatusHistory().size());
+
+        var registry_notHappyDocument = new ApprovalRegistryEntity();
+        registry_notHappyDocument.setDocument(notHappyDocument);
+        registry_notHappyDocument.setApprover("approver");
+        approvalRegistryRepository.save(registry_notHappyDocument);
+        var approved = documentService
+                .approve(new DocumentApproval(Set.of(happyDocument.getId(), notHappyDocument.getId()), "test", "test"));
+        assertEquals(2, approved.size());
+        for (var result : approved) {
+            if (result.id().equals(happyDocument.getId())) {
+                assertEquals(ResultType.SUCCESS, result.message());
+            } else if (result.id().equals(notHappyDocument.getId())) {
+                assertEquals(ResultType.REGISTRY_REGISTRATION_ERROR, result.message());
+            }
+        }
+
+        happyDocument = documentRepository.findWithHistoryById(happyDocument.getId()).get();
+        assertEquals(DocumentStatus.APPROVED, happyDocument.getStatus());
+        assertEquals(2, happyDocument.getStatusHistory().size());
+
+        notHappyDocument = documentRepository.findWithHistoryById(notHappyDocument.getId()).get();
+        assertEquals(DocumentStatus.SUBMITTED, notHappyDocument.getStatus());
+        assertEquals(1, notHappyDocument.getStatusHistory().size());
+
+        var registry_notHappyDocument_actual = approvalRegistryRepository.findByDocumentId(notHappyDocument.getId())
+                .get();
+        Assertions.assertThat(registry_notHappyDocument_actual).usingRecursiveComparison(configRecursiveComparison())
+                .ignoringFields("document").isEqualTo(registry_notHappyDocument);
     }
 
     private DocumentEntity createDocument(DocumentStatus status) {

@@ -6,7 +6,7 @@ import java.util.UUID;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import com.example.management.entity.enums.Action;
+import com.example.common.dto.enums.Action;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
@@ -48,16 +48,5 @@ public class DocumentStatusHistoryEntity {
 
     @CreatedDate
     LocalDateTime createdAt;
-
-    @Override
-    public String toString() {
-        return "DocumentStatusHistoryEntity{" +
-                "id=" + id +
-                ", action=" + action +
-                ", initiator='" + initiator + '\'' +
-                ", comment='" + comment + '\'' +
-                ", createdAt=" + createdAt +
-                '}';
-    }
 
 }

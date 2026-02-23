@@ -1,0 +1,25 @@
+spring:
+  application:
+    name: generator
+  datasource:
+    url: jdbc:postgresql://localhost:5432/document_service_db
+    driver-class-name: org.postgresql.Driver
+    username: document_service
+    password: 123456
+  jpa:
+    # show-sql: true
+    properties:
+      hibernate:
+        dll-auto: none
+        # format_sql: true
+app:
+  batch-size: 1000
+  generating-size: 10_000
+  submit-initial-delay: 1000
+  submit-delay: 5000
+  approval-initial-delay: 2000
+  approval-delay: 5000
+  base-url: http://localhost:8080
+  creating-url: /api/v1/documents
+  submit-url: /api/v1/documents/submit
+  approval-url: /api/v1/documents/approval
